@@ -24,6 +24,9 @@ gc.collect()
 tsv = open("cdhit_stats.tsv","w")
 tsv.write("\t".join(["cluster_id", "total_seq_count", "rep_seq", "all_seq", "total_length (nt)", "avg_similarity (%)"]) + "\n")
 all_clusters = clstr_data.split(">Cluster")
+largest_cluster_id = 0
+seq_count_largest_cluster = 0
+
 for i in tqdm.tqdm(range(1, len(all_clusters), 1)):
     cluster = all_clusters[i]
     cluster = cluster.split("\n")
@@ -52,8 +55,13 @@ for i in tqdm.tqdm(range(1, len(all_clusters), 1)):
     all_seq = ",".join(all_seq)
     avg_similarity = similarity / total_seq_count
     tsv_line = "%s\t%d\t%s\t%s\t%d\t%.2f" % (cluster_id, total_seq_count, rep_seq, all_seq, total_length_nt, avg_similarity)
+    if total_seq_count > seq_count_largest_cluster:
+        largest_cluster_id = cluster_id
+        seq_count_largest_cluster = total_seq_count
+
     #print tsv_line
-    tsv.write(tsv_line + "\n")     
+    tsv.write(tsv_line + "\n")    
          
 tsv.close()
 
+print "Largest Cluster ID: %s has %d Sequences." % (largest_cluster_id, seq_count_largest_cluster)
