@@ -20,12 +20,12 @@ handy_scripts
 
 
 
- - Data: [Transcript sequences (ALL)](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_28/gencode.v28.transcripts.fa.gz)
-- Word Size: 6
-- Similarity threshold: 0.85 
-- MAX_RAM: 20 GB
-- No. Threads: 32
-- Data Download: ``` bash download.sh```
-- Run : ``` cd expirement_3; bash run.sh ```
+ - **Data**: [Transcript sequences (ALL)](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_28/gencode.v28.transcripts.fa.gz)
+- **Word Size:** 6
+- **Similarity threshold:** 0.85 
+- **MAX_RAM:** 20 GB
+- **No. Threads:** 32
+- **Data Download:** ``` bash download.sh```
+- **Run :** ``` cd expirement_3; bash run.sh ```
 
 > Alter the run.sh parameters to change previous config.
