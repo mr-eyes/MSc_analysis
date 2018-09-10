@@ -22,7 +22,10 @@ handy_scripts
 
 ## Experiment_3 
 
+### **Get GTF File Stats**
+python gtf_stats.py < [file.gtf]
 
+___
 
  - **Data**: [Transcript sequences (ALL)](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_28/gencode.v28.transcripts.fa.gz)
 - **Word Size:** 6
@@ -31,5 +34,7 @@ handy_scripts
 - **No. Threads:** 32
 - **Data Download:** ``` bash download.sh```
 - **Run :** ``` cd expirement_3; bash run.sh ```
+
+
 
 > Alter the run.sh parameters to change previous config.
