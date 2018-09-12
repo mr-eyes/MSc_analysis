@@ -1,7 +1,3 @@
-# cdhit-clstr-simplifier
-
-Simplify CD-HIT output ".clstr" file for better inspection.
-
 ## Clone (Recursively)
 ```sh
 git clone --recursive https://github.com/mr-eyes/master-analysis.git 
@@ -32,7 +28,7 @@ ___
 - **Similarity threshold:** 0.85 
 - **MAX_RAM:** 20 GB
 - **No. Threads:** 32
-- **Data Download:** ``` bash download.sh```
+- **Data Download:** ``` cd expirement_3/;bash download.sh```
 - **Run :** ``` cd expirement_3; bash run.sh ```
 
 
