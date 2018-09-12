@@ -1,13 +1,26 @@
+"""
+Plotting histogram of sequences lengths and their transcript types.
+"""
+
+
 from Bio import SeqIO
 import plotly.plotly as py
 import plotly.offline
 import plotly.graph_objs as go
+import sys
+
+file_name = ""
+
+if len(sys.argv) < 2:
+    exit("Please pass the fasta file path.")
+else:
+    file_name = sys.argv[1]    
 
 counts = {}
 counts_percentage = {}
 total = 0
 
-fasta_sequences = SeqIO.parse(open("gencode.v28.transcripts.fa"), 'fasta')
+fasta_sequences = SeqIO.parse(file_name, 'fasta')
 
 for seq in fasta_sequences:
     transcript_type = str(seq.id).split("|")[-2]
