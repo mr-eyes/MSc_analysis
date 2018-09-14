@@ -1,25 +1,27 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 from Bio import SeqIO
 import argparse
 import os
 
 
 def Main():
-    
+
     intervals = []
     genes = []
     chromosomes = []
 
-    with open("gencode.v28.annotation.gtf","r") as gtf:
+    with open('gencode.v28.annotation.gtf', 'r') as gtf:
         for line in gtf:
-            if "\tgene\t" not in line:
+            if '\tgene\t' not in line:
                 continue
-            
+
             fields = line.split()
-            
+
             interval = (int(fields[3]), int(fields[4]))
-            gene_id = fields[9][1:-2]
+            gene_id = (fields[9])[1:-2]
             chromosome = fields[0]
-            
+
             intervals.append(interval)
             genes.append(gene_id)
             chromosomes.append(chromosome)
@@ -28,49 +30,45 @@ def Main():
     temp_locus = set()
     locus_index = 0
 
-    for v in range(1,len(intervals),1):
-        _prev_interval = intervals[v-1]
+    for v in range(1, len(intervals), 1):
+        _prev_interval = intervals[v - 1]
         _curr_interval = intervals[v]
-        _prev_chr = chromosomes[v-1]
+        _prev_chr = chromosomes[v - 1]
         _curr_chr = chromosomes[v]
-        _prev_gene_id = genes[v-1]
+        _prev_gene_id = genes[v - 1]
         _curr_gene_id = genes[v]
-        
-        
+
         if _curr_chr != _prev_chr:
             temp_locus.add(_prev_gene_id)
             for gene in temp_locus:
                 loci[gene] = locus_index
             locus_index += 1
             temp_locus = set()
-        
-        
-        elif _curr_interval[0] > _prev_interval[0] and _curr_interval[0] < _prev_interval[1]:
-            temp_locus.add(_prev_gene_id)
+        elif _curr_interval[0] > _prev_interval[0] \
+                and _curr_interval[0] < _prev_interval[1]:
 
-            
+            temp_locus.add(_prev_gene_id)
         else:
+
             temp_locus.add(_prev_gene_id)
             for gene in temp_locus:
                 loci[gene] = locus_index
-                
+
             locus_index += 1
             temp_locus = set()
             temp_locus.add(_curr_gene_id)
-            
-        
+
         if v == len(intervals) - 1:
             temp_locus.add(_curr_gene_id)
             for gene in temp_locus:
                 loci[gene] = locus_index
             locus_index += 1
 
-
     with open(output_fasta, 'w') as output_handle:
         sequences = SeqIO.parse(open(original_fasta_file), 'fasta')
         for seq in sequences:
             gene_id = seq.id.split('|')[1]
-            locus = "Locus_" + str(loci[gene_id])
+            locus = 'Locus_' + str(loci[gene_id])
             seq.id = seq.description = seq.name + locus + '|'
             SeqIO.write(seq, output_handle, 'fasta')
 
