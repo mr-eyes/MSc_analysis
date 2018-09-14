@@ -14,37 +14,45 @@ file_name = ""
 if len(sys.argv) < 2:
     exit("Please pass the fasta file path.")
 else:
-    file_name = sys.argv[1]    
+    file_name = sys.argv[1]
 
 counts = {}
-counts_percentage = {}
-total = 0
+filtered_counts = {}
 
 fasta_sequences = SeqIO.parse(file_name, 'fasta')
 
 for seq in fasta_sequences:
-    transcript_type = str(seq.id).split("|")[-2]
-    if transcript_type in counts:
-        length = len(seq)
-        counts[transcript_type] += length
-        total += length
+    length = len(seq)
+
+    if length in counts:
+        counts[length] += 1
     else:
-        length = len(seq)
-        counts[transcript_type] = len(seq)
-        total += length
+        counts[length] = 1
 
 
 for key, value in counts.iteritems():
-    counts_percentage[key] = (float(value) / total) * 100
+    if value > 15:
+        filtered_counts[key] = value
 
-
-types = counts.keys()
-frequency = counts.values()
+lengths = filtered_counts.keys()
+no_seqs = filtered_counts.values()
 
 data = [go.Bar(
-    x= types,
-    y= frequency
+    #histfunc = "count",
+    x=lengths,
+    y=no_seqs,
+
 )]
 
-fig = go.Figure(data=data)
+layout = go.Layout(
+    title='Seqs Lengths Vs. Occurence',
+    xaxis=dict(
+        title='Lengths (bp)'
+    ),
+    yaxis=dict(
+        title='No. Of Seqs'
+    )
+)
+
+fig = go.Figure(data=data, layout=layout)
 plotly.offline.plot(fig, filename='histogram.html', auto_open=False)
