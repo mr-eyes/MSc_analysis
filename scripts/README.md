@@ -2,7 +2,7 @@
 
 ## Histogram
 - **Description:** Draw histogram of sequence lengths Vs. Number of occurence.
-- **Run:** `python histogram.py [seq_length_threshold]`
+- **Run:** `python histogram.py [Fasta_file] [optional: seq_length_threshold]`
 	- Ex: `python histogram.py 100` will plot only sequences with length <= 100 bp
 
 ## Add gene locus to Fasta headers
