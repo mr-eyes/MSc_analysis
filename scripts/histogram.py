@@ -10,11 +10,17 @@ import plotly.graph_objs as go
 import sys
 
 file_name = ""
+threshold = 0
 
 if len(sys.argv) < 2:
     exit("Please pass the fasta file path.")
 else:
     file_name = sys.argv[1]
+
+if len(sys.argv) == 3:
+    threshold = int(sys.argv[2])
+
+print threshold
 
 counts = {}
 filtered_counts = {}
@@ -31,8 +37,12 @@ for seq in fasta_sequences:
 
 
 for key, value in counts.iteritems():
-    if value > 15:
+    if threshold:
+        if key <= threshold:
+            filtered_counts[key] = value
+    else:
         filtered_counts[key] = value
+
 
 lengths = filtered_counts.keys()
 no_seqs = filtered_counts.values()
