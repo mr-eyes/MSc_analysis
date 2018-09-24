@@ -1,0 +1,1 @@
+bash run.py [fasta_file] [kmer_size]
