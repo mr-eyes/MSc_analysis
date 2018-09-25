@@ -11,7 +11,7 @@ def Main():
     genes = []
     chromosomes = []
 
-    with open('gencode.v28.annotation.gtf', 'r') as gtf:
+    with open(gtf_file_path, 'r') as gtf:
         for line in gtf:
             if '\tgene\t' not in line:
                 continue
@@ -29,6 +29,7 @@ def Main():
     loci = {}
     temp_locus = set()
     locus_index = 0
+    largest_end = intervals[0][1]
 
     for v in range(1, len(intervals), 1):
         _prev_interval = intervals[v - 1]
@@ -38,16 +39,22 @@ def Main():
         _prev_gene_id = genes[v - 1]
         _curr_gene_id = genes[v]
 
+        if _prev_interval[1] > largest_end:
+            largest_end = _prev_interval[1]
+
         if _curr_chr != _prev_chr:
             temp_locus.add(_prev_gene_id)
+
             for gene in temp_locus:
                 loci[gene] = locus_index
+
             locus_index += 1
             temp_locus = set()
-        elif _curr_interval[0] > _prev_interval[0] \
-                and _curr_interval[0] < _prev_interval[1]:
+            largest_end = _curr_interval[1]
 
+        elif _curr_interval[0] < largest_end:
             temp_locus.add(_prev_gene_id)
+
         else:
 
             temp_locus.add(_prev_gene_id)
@@ -56,6 +63,7 @@ def Main():
 
             locus_index += 1
             temp_locus = set()
+            largest_end = _curr_interval[1]
             temp_locus.add(_curr_gene_id)
 
         if v == len(intervals) - 1:
