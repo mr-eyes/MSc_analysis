@@ -7,15 +7,17 @@ node_transcripts = {}
 edges = []
 
 gfa_file = ""
+output = ""
 
-if len(sys.argv) > 1:
+if len(sys.argv) > 2:
     gfa_file = sys.argv[1]
+    output = sys.argv[2]
 else:
-    exit("Please pass the GFA file path.")
+    exit("Please pass the GFA file path and output file name\nEx: python kallisto_kmer_clustering.py x.gfa res.tsv")
 
 
-with open(gfa_file) as gtf:
-    for line in gtf:
+with open(gfa_file) as gfa:
+    for line in gfa:
         if line[0] == "S":
             main = re.findall(re.compile("S\t+(\d+).{1,}S:+(\w+\.\d)"), line)
             extra = re.findall(re.compile(",+(\w+\.\d)"), line)
@@ -39,7 +41,7 @@ for cluster in connected_components(G):
     for node in cluster:
         clusters.append(node_transcripts[node])
 
-result = open("clusters.tsv","w")
+result = open(output + ".tsv","w")
 result.write("cluster_id\ttranscripts_ids\n")
 for i in range(len(clusters)):
     result.write(str(i)+"\t"+",".join(clusters[i]))
