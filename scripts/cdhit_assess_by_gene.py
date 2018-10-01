@@ -79,7 +79,7 @@ output_file = ""
 
 if len(sys.argv) < 3:
     sys.exit(
-        "Kindly pass positional arguments, ex: python clusters_assessment.py [fasta_file] [clstr_file]")
+        "Kindly pass positional arguments, ex: python clusters_assessment.py <fasta_file> <clstr_file> <output_file>")
 
 else:
     fasta_file_path = sys.argv[1]
