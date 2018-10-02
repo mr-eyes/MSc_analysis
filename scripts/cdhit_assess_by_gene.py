@@ -1,6 +1,9 @@
+from __future__ import division
 import tqdm
 import re
 import sys
+import json
+
 
 
 def transcripts_to_loci(transcipts_ids):
@@ -72,6 +75,24 @@ def Q2(cluster):
     else:
         return False
 
+def build_stats(cluster_type, no_loci, no_genes, no_complete_genes, no_complete_loci):
+    stats["loci"][cluster_type].append(no_loci)
+    stats["genes"][cluster_type].append(no_genes)
+    stats["complete-genes"][cluster_type].append(no_complete_genes)
+    stats["complete-loci"][cluster_type].append(no_complete_loci)
+
+
+def _mean(lst):
+    return round(sum(lst) / len(lst),2)
+
+
+def _std(lst):
+    mean = sum(lst) / len(lst)
+    differences = [x - mean for x in lst]
+    sq_differences = [d ** 2 for d in differences]
+    ssd = sum(sq_differences)
+    return round(ssd,2)
+
 
 fasta_file_path = ""
 clstr_file_path = ""
@@ -87,11 +108,17 @@ else:
     output_file = sys.argv[3]
 
 
-tt = 0
-tf = 0
-ft = 0
-ff = 0
+_complete_mixed = 0
+_complete_clean = 0
+_incomplete_mixed = 0
+_incomplete_clean = 0
 
+
+stats = {"loci": {"_complete_mixed": [], "_complete_clean": [], "_incomplete_mixed": [], "_incomplete_clean": []},
+         "genes": {"_complete_mixed": [], "_complete_clean": [], "_incomplete_mixed": [], "_incomplete_clean": []},
+         "complete-genes": {"_complete_mixed": [], "_complete_clean": [], "_incomplete_mixed": [], "_incomplete_clean": []},
+         "complete-loci": {"_complete_mixed": [], "_complete_clean": [], "_incomplete_mixed": [], "_incomplete_clean": []}
+         }
 
 locus_transcripts = {}  # locus_0 : gene1,gene2,...
 transcript_locus = {}  # gene1:locus1, gene2:locus1, gene3:locus3
@@ -167,26 +194,66 @@ for cluster_id, transcripts_ids in sorted(clusters_transcripts_ids.iteritems()):
 
     if q1 == True and q2 == True:
         ans1, ans2 = "Complete", "Mixed"
-        tt += 1
+        _complete_mixed += 1
+        build_stats("_complete_mixed",no_loci, no_genes, no_complete_genes, no_complete_loci)
     if q1 == True and q2 == False:
         ans1, ans2 = "Complete", "Clean"
-        tf += 1
+        _complete_clean += 1
+        build_stats("_complete_clean",no_loci, no_genes, no_complete_genes, no_complete_loci)
     if q1 == False and q2 == True:
         ans1, ans2 = "InComplete", "Mixed"
-        ft += 1
+        _incomplete_mixed += 1
+        build_stats("_incomplete_mixed",no_loci, no_genes, no_complete_genes, no_complete_loci)
     if q1 == False and q2 == False:
         ans1, ans2 = "InComplete", "Clean"
-        ff += 1
+        _incomplete_clean += 1
+        build_stats("_incomplete_clean",no_loci, no_genes, no_complete_genes, no_complete_loci)
 
-    line = str(cluster_id) + "\t" + ans1 + "\t" + ans2 + "\t" + str(no_loci) + "\t" + \
-        str(no_complete_loci) + "\t" + str(no_genes) + \
-        "\t" + str(no_complete_genes) + "\n"
+    line = str(cluster_id) + "\t" + ans1 + "\t" + ans2 + "\t" + str(no_loci) + "\t" + str(no_complete_loci) + "\t" + str(no_genes) + "\t" + str(no_complete_genes) + "\n"
     res.write(line)
 
 res.close()
 
 
-print ("%d Complete Mixed Components | [TT]\n") % (tt)
-print ("%d Complete Clean Components | [FT]\n") % (tf)
-print ("%d Incomplete Mixed  Components | [FT]\n") % (ft)
-print ("%d Incomplete Clean Components | [FF]\n") % (ff)
+# Writing summary file of counts ________________________________
+
+summary = open(output_file.split(".")[0] + "_summary.txt" , "w")
+summary.write(("%d Complete Mixed Components | [_complete_mixed]\n") % (_complete_mixed))
+summary.write(("%d Complete Clean Components | [_complete_clean]\n") % (_complete_clean))
+summary.write(("%d Incomplete Mixed  Components | [_incomplete_mixed]\n") % (_incomplete_mixed))
+summary.write(("%d Incomplete Clean Components | [_incomplete_clean]\n") % (_incomplete_clean))
+summary.close()
+
+
+# Writing statistics json file ________________________________
+
+json_output = {}
+for cluster_type in ["_complete_mixed","_complete_clean","_incomplete_mixed","_incomplete_clean"]:
+    result =  {
+        'mean': {
+            'no_genes': _mean(stats["genes"][cluster_type]),
+            'complete_genes':  _mean(stats["complete-genes"][cluster_type]),
+            'no_loci':  _mean(stats["loci"][cluster_type]),
+            'complete_loci':  _mean(stats["complete-loci"][cluster_type])
+        },
+        'std': {
+            'no_genes': _std(stats["genes"][cluster_type]),
+            'complete_genes':  _std(stats["complete-genes"][cluster_type]),
+            'no_loci':  _std(stats["loci"][cluster_type]),
+            'complete_loci':  _std(stats["complete-loci"][cluster_type])
+        },
+        'min': {"no_genes": min(stats["genes"][cluster_type]),
+                "complete_genes": min(stats["complete-genes"][cluster_type]),
+                "no_loci": min(stats["loci"][cluster_type]),
+                "complete_loci": min(stats["complete-loci"][cluster_type])},
+        'max': {"no_genes": max(stats["genes"][cluster_type]),
+                "complete_genes": max(stats["complete-genes"][cluster_type]),
+                "no_loci": max(stats["loci"][cluster_type]),
+                "complete_loci": max(stats["complete-loci"][cluster_type])}
+    }
+    json_output[cluster_type] = result
+
+
+json_file = open(output_file.split(".")[0] + "_stats.json", "w")
+json_file.write(json.dumps(json_output, sort_keys=True, indent=4, separators=(',', ': ')))
+json_file.close()
