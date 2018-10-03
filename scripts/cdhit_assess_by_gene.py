@@ -3,6 +3,7 @@ import tqdm
 import re
 import sys
 import json
+import math
 
 
 
@@ -87,11 +88,10 @@ def _mean(lst):
 
 
 def _std(lst):
-    mean = sum(lst) / len(lst)
-    differences = [x - mean for x in lst]
-    sq_differences = [d ** 2 for d in differences]
-    ssd = sum(sq_differences)
-    return round(ssd,2)
+    mean = sum(lst) / len(lst)   # mean
+    var = sum(pow(x-mean, 2) for x in lst) / len(lst)  # variance
+    std = math.sqrt(var)  # standard deviation
+    return round(std, 2)
 
 
 fasta_file_path = ""

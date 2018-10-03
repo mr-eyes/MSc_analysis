@@ -3,7 +3,7 @@ import tqdm
 import re
 import sys
 import json
-
+import math
 
 def transcripts_to_loci(transcipts_ids):
     loci = {} # {locus:counted}
@@ -82,13 +82,12 @@ def build_stats(cluster_type, no_loci, no_genes, no_complete_genes, no_complete_
 def _mean(lst):
     return round(sum(lst) / len(lst),2)
 
-
 def _std(lst):
-    mean = sum(lst) / len(lst)
-    differences = [x - mean for x in lst]
-    sq_differences = [d ** 2 for d in differences]
-    ssd = sum(sq_differences)
-    return round(ssd,2)
+    mean = sum(lst) / len(lst)   # mean
+    var = sum(pow(x-mean, 2) for x in lst) / len(lst)  # variance
+    std = math.sqrt(var)  # standard deviation
+    return round(std, 2)
+
 
 fasta_file_path = ""
 clstr_file_path = ""
@@ -207,7 +206,7 @@ summary.close()
 # Writing statistics json file ________________________________
 
 json_output = {}
-for cluster_type in ["_complete_mixed","_complete_clean","_incomplete_mixed","_incomplete_clean"]:
+for cluster_type in ["_incomplete_mixed"]:#,"_incomplete_clean","_complete_mixed","_complete_clean"]:#["_complete_mixed","_complete_clean","_incomplete_mixed","_incomplete_clean"]:
     result =  {
         'mean': {
             'no_genes': _mean(stats["genes"][cluster_type]),
