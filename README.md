@@ -33,17 +33,30 @@ python ../scripts/add_locus.py -i protein_coding_gencode.v28.transcripts.fa -g g
 ####  Data Exploration
 ```sh
 mkdir overview; cd overview/
-# Generating Histogram
+#1 Generating Histogram
 python ../../scripts/histogram.py ../gencode.v28.transcripts.fa
 
-# Replicating gencode stats | RNA Types count
+#2 Replicating gencode stats | RNA Types count
 python ../../scripts/extract_RNA_types.py ../gencode.v28.transcripts.fa > rna_types.txt
 
-# Get stats about the GTF
+#3 Get stats about the GTF
 python ../../scripts/gtf_stats.py ../gencode.v28.primary_assembly.annotation.gtf > gtf_stats.txt
+
+# Move to root directory
+cd ../../
 ```
-####   
+####   Kallisto Kmer-based partitioning experiments
 ```sh
+cd experiments/kmers_clustering/
+
+#1 Download Kallisto executable file from "https://github.com/pachterlab/kallisto/releases"
+https://github.com/pachterlab/kallisto/releases/download/v0.44.0/kallisto_linux-v0.44.0.tar.gz
+
+#2 Extract and rename
+tar -xzf kallisto_linux-v0.44.0.tar.gz
+rm *gz
+mv kallisto_linux-v0.44.0/kallisto ./
+rm -rf kallisto_linux-v0.44.0
 
 ```
 ####  
