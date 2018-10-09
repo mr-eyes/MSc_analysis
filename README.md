@@ -14,8 +14,7 @@ bash build_cdhit.sh
 ```
 ####  Data preparation
 ```bash
-mkdir data
-cd data/
+mkdir data; cd data/
 
 #1 Download Human Transcriptome
 wget -c ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_28/gencode.v28.transcripts.fa.gz
@@ -57,33 +56,59 @@ cd experiments/kmers_clustering/
 #1 Download and build Kallisto with Kmer_size < 128 support
 bash install_kallisto.sh
 
-#2 Run Kallisto kmer-based clustering on kmers 21:99 Protein_Coding
+#2 Run Kallisto kmer-based clustering on kmers 21:99 Protein_Coding human transcripts
 for i in {21..99..2}; 
 do bash run.sh ../../data/loci_protein_coding_gencode.v28.transcripts.fa ${i} protein_coding;
 done
 
-#3 Run Kallisto kmer-based clustering on kmers 21:99 Protein_Coding
+#3 Run Kallisto kmer-based clustering on kmers 21:99 Human Full Transcriptome
 for i in {21..99..2}; 
 do bash run.sh ../../data/loci_gencode.v28.transcripts.fa ${i} full_human_transcriptome;
 done
+
+# Return to expirements root directory
+cd ../
 ```
-####  
-```sh
+####  Visualizing kallisto kmer-based clustering results
+```bash
+
+```
+####  CD-HIT Clustering by similarity thresholds experiments
+```bash
+cd cd-hit/
+
+#1 Install CD-HIT software
+bash install_cdhit.sh
+
+#2 Automate CD-HIT Clustering and Assessment using similarity thresholds {0.8, 0.85, 0.9, 0.95}
+# Protein Coding Human Transcripts
+
+THRESHOLDS=(0.95 0.90 0.85 0.8);
+WORD_COUNTS=(10 8 6 5);
+
+for  i  in {0..3};
+do bash run.sh ../../data/loci_protein_coding_gencode.v28.transcripts.fa ${THRESHOLDS[${i}]}  ${WORD_COUNTS[${i}]} protein_coding_assessement;
+done;
+
+# Full Human Transcriptome
+
+THRESHOLDS=(0.95 0.90 0.85 0.8);
+WORD_COUNTS=(10 8 6 5);
+
+for  i  in {0..3};
+do bash run.sh ../../data/loci_gencode.v28.transcripts.fa ${THRESHOLDS[${i}]}  ${WORD_COUNTS[${i}]} full_transcriptome_assessement;
+done;
 
 ```
 ####  
-```sh
+```bash
 
 ```
 ####  
-```sh
+```bash
 
 ```
 ####  
-```sh
-
-```
-####  
-```sh
+```bash
 
 ```
