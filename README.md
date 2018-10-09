@@ -85,10 +85,10 @@ cd ../
 
 ```bash
 #1 Visualize Protein Coding results
-grep "" kmers_clustering/protein_coding_results/*/*summary* | python visualize_kmers_clustering.py protein_coding
+grep "" kmers_clustering/protein_coding_results/*/*summary* | python ../scripts/visualize_kmers_clustering.py kallisto_protein_coding.html
 
 #2 Visualize Full Human Transcriptome results
-grep "" kmers_clustering/full_human_transcriptome_results/*/*summary* | python visualize_kmers_clustering.py full_transcriptome
+grep "" kmers_clustering/full_human_transcriptome_results/*/*summary* | python ../scripts/visualize_kmers_clustering.py kallisto_full_transcriptome.html
 
 ```
 
@@ -119,10 +119,16 @@ for  i  in {0..3};
 do bash run.sh ../../data/loci_gencode.v28.transcripts.fa ${THRESHOLDS[${i}]}  ${WORD_COUNTS[${i}]} full_transcriptome_assessement;
 done;
 
+# Return to expirements root directory
+cd ../
 ```
 
 #### Visualizing Cd-HIT clustering results
 
 ```bash
+#1 Visualize Protein Coding clustering results
+grep "" cd-hit/protein_coding_assessement/*/*summary* | python ../scripts/visualize_cdhit_clustering.py cdhit_protein_coding.html
 
+#2 Visualize Full Human Transcriptome results
+grep "" cd-hit/full_transcriptome_assessement/*/*summary* | python .../scripts/visualize_cdhit_clustering.py cdhit_full_transcriptome.html
 ```
