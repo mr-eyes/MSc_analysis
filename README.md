@@ -3,12 +3,17 @@
 git clone --recursive https://github.com/mr-eyes/master-analysis
 cd master-analysis/
 ```
+#### Dependencies
+```bash
+# autoconf
+sudo apt-get install autoconf
+```
 #### Build CD-HIT 
-```sh
+```bash
 bash build_cdhit.sh
 ```
 ####  Data preparation
-```sh
+```bash
 mkdir data
 cd data/
 
@@ -16,7 +21,7 @@ cd data/
 wget -c ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_28/gencode.v28.transcripts.fa.gz
 
 #2 Download GTF: Comprehensive gene annotation | PRI
-ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_28/gencode.v28.primary_assembly.annotation.gtf.gz
+wget -c ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_28/gencode.v28.primary_assembly.annotation.gtf.gz
 
 #3 Extract files
 gunzip *
@@ -31,7 +36,7 @@ python ../scripts/add_locus.py -i gencode.v28.transcripts.fa -g gencode.v28.prim
 python ../scripts/add_locus.py -i protein_coding_gencode.v28.transcripts.fa -g gencode.v28.primary_assembly.annotation.gtf -o loci_protein_coding_gencode.v28.transcripts.fa
 ```
 ####  Data Exploration
-```sh
+```bash
 mkdir overview; cd overview/
 #1 Generating Histogram
 python ../../scripts/histogram.py ../gencode.v28.transcripts.fa
@@ -46,18 +51,21 @@ python ../../scripts/gtf_stats.py ../gencode.v28.primary_assembly.annotation.gtf
 cd ../../
 ```
 ####   Kallisto Kmer-based partitioning experiments
-```sh
+```bash
 cd experiments/kmers_clustering/
 
-#1 Download Kallisto executable file from "https://github.com/pachterlab/kallisto/releases"
-https://github.com/pachterlab/kallisto/releases/download/v0.44.0/kallisto_linux-v0.44.0.tar.gz
+#1 Download and build Kallisto with Kmer_size < 128 support
+bash install_kallisto.sh
 
-#2 Extract and rename
-tar -xzf kallisto_linux-v0.44.0.tar.gz
-rm *gz
-mv kallisto_linux-v0.44.0/kallisto ./
-rm -rf kallisto_linux-v0.44.0
+#2 Run Kallisto kmer-based clustering on kmers 21:99 Protein_Coding
+for i in {21..99..2}; 
+do bash run.sh ../../data/loci_protein_coding_gencode.v28.transcripts.fa ${i} protein_coding;
+done
 
+#3 Run Kallisto kmer-based clustering on kmers 21:99 Protein_Coding
+for i in {21..99..2}; 
+do bash run.sh ../../data/loci_gencode.v28.transcripts.fa ${i} full_human_transcriptome;
+done
 ```
 ####  
 ```sh
