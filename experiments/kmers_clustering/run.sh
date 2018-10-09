@@ -1,11 +1,21 @@
-mkdir K$2_assessement
-python filter_by_length.py $1 filtered_k$2_$1 $2
-./kallisto index -i $2.idx filtered_k$2_$1 -k $2
-./kallisto inspect $2.idx --gfa=$2.gfa
+#!/bin/bash
+
+FILTER=../../scripts/filter_by_length.py
+CLUSTER=../../scripts/kallisto_kmer_clustering.py
+ASSESS=../../scripts/kallisto_assess_by_gene.py
+KALLISTO=kallisto
+FASTA=$(sed "s/.*\///" <<< $1)
+KMER=$2
+
+python $FILTER $1 filtered_K${KMER} ${KMER}
+./${KALLISTO} index -i ${KMER}.idx filtered_K${KMER}_${FASTA} -k ${KMER}
+./${KALLISTO} inspect ${KMER}.idx --gfa=${KMER}.gfa
 rm *idx
-python kmer_based_clustering.py $2.gfa clusters_k$2.tsv
+python $CLUSTER ${KMER}.gfa clusters_k${KMER}.tsv
 rm *gfa
-python assess_by_gene.py filtered_k$2_$1 clusters_k$2.tsv k$2_clusters_assessment.tsv > k$2_summary.txt
-rm filtered_k$2_$1
-mv *.tsv K$2_assessement/
-mv *summary* K$2_assessement/
+python $ASSESS filtered_K${KMER}* clusters_k${KMER}.tsv k${KMER}_clusters_assessment.tsv
+rm filtered_K${KMER}_${FASTA}
+mkdir K${KMER}_assessement
+mv *.tsv K${KMER}_assessement/
+mv *summary* K${KMER}_assessement/
+mv *stats.json K${KMER}_assessement/
