@@ -217,7 +217,7 @@ res.close()
 
 # Writing summary file of counts ________________________________
 
-summary = open("".join(output_file.split(".")[:-2])[1:] + "_summary.txt" , "w")
+summary = open("".join(output_file.split(".")[:-2])[1:] + "_summary.txt", "w")
 summary.write(("%d Complete Mixed Components | [_complete_mixed]\n") % (_complete_mixed))
 summary.write(("%d Complete Clean Components | [_complete_clean]\n") % (_complete_clean))
 summary.write(("%d Incomplete Mixed  Components | [_incomplete_mixed]\n") % (_incomplete_mixed))
