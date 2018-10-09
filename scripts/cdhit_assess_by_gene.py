@@ -217,7 +217,7 @@ res.close()
 
 # Writing summary file of counts ________________________________
 
-summary = open(output_file.split(".")[0] + "_summary.txt" , "w")
+summary = open("".join(output_file.split(".")[:-2])[1:] + "_summary.txt" , "w")
 summary.write(("%d Complete Mixed Components | [_complete_mixed]\n") % (_complete_mixed))
 summary.write(("%d Complete Clean Components | [_complete_clean]\n") % (_complete_clean))
 summary.write(("%d Incomplete Mixed  Components | [_incomplete_mixed]\n") % (_incomplete_mixed))
@@ -254,6 +254,6 @@ for cluster_type in ["_complete_mixed","_complete_clean","_incomplete_mixed","_i
     json_output[cluster_type] = result
 
 
-json_file = open(output_file.split(".")[0] + "_stats.json", "w")
+json_file = open("".join(output_file.split(".")[:-2])[1:] + "_stats.json", "w")
 json_file.write(json.dumps(json_output, sort_keys=True, indent=4, separators=(',', ': ')))
 json_file.close()

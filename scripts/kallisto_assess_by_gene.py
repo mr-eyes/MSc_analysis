@@ -5,29 +5,32 @@ import sys
 import json
 import math
 
+
 def transcripts_to_loci(transcipts_ids):
-    loci = {} # {locus:counted}
+    loci = {}  # {locus:counted}
     for transcript in transcipts_ids:
         locus = transcript_locus[transcript]
-        
+
         if locus in loci:
             loci[locus] += 1
         else:
             loci[locus] = 1
-    
+
     return loci
 
+
 def transcripts_to_genes(transcipts_ids):
-    genes = {} # {locus:counted}
+    genes = {}  # {locus:counted}
     for transcript in transcipts_ids:
         gene = transcript_gene[transcript]
-        
+
         if gene in genes:
             genes[gene] += 1
         else:
             genes[gene] = 1
-    
+
     return genes
+
 
 def how_many_loci(cluster):
     return len(transcripts_to_loci(cluster))
@@ -36,13 +39,14 @@ def how_many_loci(cluster):
 def how_many_genes(cluster):
     return len(transcripts_to_genes(cluster))
 
+
 def how_many_complete_loci(cluster):
     loci = transcripts_to_loci(cluster)
     complete = 0
     for key, value in loci.iteritems():
         if len(locus_transcripts[key]) == value:
             complete += 1
-    
+
     return complete
 
 
@@ -61,7 +65,7 @@ def Q1(cluster):
     for key, value in cluster_genes.iteritems():
         if len(gene_transcripts[key]) != value:
             return False
-    
+
     return True
 
 
@@ -80,7 +84,8 @@ def build_stats(cluster_type, no_loci, no_genes, no_complete_genes, no_complete_
 
 
 def _mean(lst):
-    return round(sum(lst) / len(lst),2)
+    return round(sum(lst) / len(lst), 2)
+
 
 def _std(lst):
     mean = sum(lst) / len(lst)   # mean
@@ -94,7 +99,8 @@ clstr_file_path = ""
 output_file = ""
 
 if len(sys.argv) < 3:
-    sys.exit("Kindly pass positional arguments, ex: python clusters_assessment.py [fasta_file] [clstr_file]")
+    sys.exit(
+        "Kindly pass positional arguments, ex: python clusters_assessment.py [fasta_file] [clstr_file]")
 
 else:
     fasta_file_path = sys.argv[1]
@@ -113,7 +119,7 @@ stats = {"loci": {"_complete_mixed": [], "_complete_clean": [], "_incomplete_mix
          }
 
 
-locus_transcripts = {} # locus_0 : gene1,gene2,...
+locus_transcripts = {}  # locus_0 : gene1,gene2,...
 transcript_locus = {}  # gene1:locus1, gene2:locus1, gene3:locus3
 
 gene_transcripts = {}  # gene_id: transcript1,transcript2,.....
@@ -170,44 +176,54 @@ for cluster_id, transcripts_ids in sorted(clusters_transcripts_ids.iteritems()):
 
     ans1 = ""
     ans2 = ""
-    
+
     if q1 == True and q2 == True:
         ans1, ans2 = "Complete", "Mixed"
         _complete_mixed += 1
-        build_stats("_complete_mixed",no_loci, no_genes, no_complete_genes, no_complete_loci)
+        build_stats("_complete_mixed", no_loci, no_genes,
+                    no_complete_genes, no_complete_loci)
     if q1 == True and q2 == False:
         ans1, ans2 = "Complete", "Clean"
         _complete_clean += 1
-        build_stats("_complete_clean",no_loci, no_genes, no_complete_genes, no_complete_loci)
+        build_stats("_complete_clean", no_loci, no_genes,
+                    no_complete_genes, no_complete_loci)
     if q1 == False and q2 == True:
         ans1, ans2 = "InComplete", "Mixed"
         _incomplete_mixed += 1
-        build_stats("_incomplete_mixed",no_loci, no_genes, no_complete_genes, no_complete_loci)
+        build_stats("_incomplete_mixed", no_loci, no_genes,
+                    no_complete_genes, no_complete_loci)
     if q1 == False and q2 == False:
         ans1, ans2 = "InComplete", "Clean"
         _incomplete_clean += 1
-        build_stats("_incomplete_clean",no_loci, no_genes, no_complete_genes, no_complete_loci)
+        build_stats("_incomplete_clean", no_loci, no_genes,
+                    no_complete_genes, no_complete_loci)
 
-    line = str(cluster_id) + "\t" + ans1 + "\t" + ans2 + "\t" + str(no_loci) + "\t" + str(no_complete_loci) + "\t" + str(no_genes) + "\t" + str(no_complete_genes) + "\n"
+    line = str(cluster_id) + "\t" + ans1 + "\t" + ans2 + "\t" + str(no_loci) + "\t" + \
+        str(no_complete_loci) + "\t" + str(no_genes) + \
+        "\t" + str(no_complete_genes) + "\n"
     res.write(line)
 
 res.close()
 
 # Writing summary file of counts ________________________________
 
-summary = open(output_file.split(".")[0] + "_summary.txt" , "w")
-summary.write(("%d Complete Mixed Components | [_complete_mixed]\n") % (_complete_mixed))
-summary.write(("%d Complete Clean Components | [_complete_clean]\n") % (_complete_clean))
-summary.write(("%d Incomplete Mixed  Components | [_incomplete_mixed]\n") % (_incomplete_mixed))
-summary.write(("%d Incomplete Clean Components | [_incomplete_clean]\n") % (_incomplete_clean))
+summary = open(output_file.split(".")[0] + "_summary.txt", "w")
+summary.write(
+    ("%d Complete Mixed Components | [_complete_mixed]\n") % (_complete_mixed))
+summary.write(
+    ("%d Complete Clean Components | [_complete_clean]\n") % (_complete_clean))
+summary.write(("%d Incomplete Mixed  Components | [_incomplete_mixed]\n") % (
+    _incomplete_mixed))
+summary.write(("%d Incomplete Clean Components | [_incomplete_clean]\n") % (
+    _incomplete_clean))
 summary.close()
 
 
 # Writing statistics json file ________________________________
 
 json_output = {}
-for cluster_type in ["_incomplete_mixed"]:#,"_incomplete_clean","_complete_mixed","_complete_clean"]:#["_complete_mixed","_complete_clean","_incomplete_mixed","_incomplete_clean"]:
-    result =  {
+for cluster_type in ["_incomplete_mixed", "_incomplete_clean", "_complete_mixed", "_complete_clean"]:
+    result = {
         'mean': {
             'no_genes': _mean(stats["genes"][cluster_type]),
             'complete_genes':  _mean(stats["complete-genes"][cluster_type]),
@@ -233,5 +249,6 @@ for cluster_type in ["_incomplete_mixed"]:#,"_incomplete_clean","_complete_mixed
 
 
 json_file = open(output_file.split(".")[0] + "_stats.json", "w")
-json_file.write(json.dumps(json_output, sort_keys=True, indent=4, separators=(',', ': ')))
+json_file.write(json.dumps(json_output, sort_keys=True,
+                           indent=4, separators=(',', ': ')))
 json_file.close()

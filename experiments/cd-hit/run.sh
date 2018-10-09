@@ -3,9 +3,10 @@
 # Set Variables
 CDHIT=cdhit/cd-hit-est
 FASTA=$(sed "s/.*\///" <<< ${1})
-echo $FASTA
 THRESHOLD=${2}
 WORD=${3}
+TYPE=${4}
+
 ASSESS=../../scripts/cdhit_assess_by_gene.py
 
 # Run CD-HIT
@@ -18,5 +19,5 @@ rm ${THRESHOLD}_${FASTA}
 python ${ASSESS} ${1} ${THRESHOLD}_${FASTA}.clstr ${THRESHOLD}_${FASTA}.tsv
 
 # Organize Results
-mkdir -p ${THRESHOLD}_${FASTA}_assessment
-mv *.clstr *.tsv *json *txt ${THRESHOLD}_${FASTA}_assessment/
+mkdir -p ${TYPE}/${THRESHOLD}_${FASTA}_assessment
+mv *.clstr *.tsv *json *txt ${TYPE}/${THRESHOLD}_${FASTA}_assessment/
