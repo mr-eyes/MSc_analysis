@@ -1,18 +1,25 @@
-####  Clone
+#### Clone
+
 ```sh
 git clone --recursive https://github.com/mr-eyes/master-analysis
 cd master-analysis/
 ```
+
 #### Dependencies
+
 ```bash
 # autoconf
 sudo apt-get install autoconf
 ```
+
 #### Build CD-HIT 
+
 ```bash
 bash build_cdhit.sh
 ```
-####  Data preparation
+
+#### Data preparation
+
 ```bash
 mkdir data; cd data/
 
@@ -34,7 +41,9 @@ python ../scripts/add_locus.py -i gencode.v28.transcripts.fa -g gencode.v28.prim
 #6 Adding gene locus to protein coding transcripts fasta headers
 python ../scripts/add_locus.py -i protein_coding_gencode.v28.transcripts.fa -g gencode.v28.primary_assembly.annotation.gtf -o loci_protein_coding_gencode.v28.transcripts.fa
 ```
-####  Data Exploration
+
+#### Data Exploration
+
 ```bash
 mkdir overview; cd overview/
 #1 Generating Histogram
@@ -49,7 +58,9 @@ python ../../scripts/gtf_stats.py ../gencode.v28.primary_assembly.annotation.gtf
 # Move to root directory
 cd ../../
 ```
-####   Kallisto Kmer-based partitioning experiments
+
+####  Kallisto Kmer-based partitioning experiments
+
 ```bash
 cd experiments/kmers_clustering/
 
@@ -69,11 +80,20 @@ done
 # Return to expirements root directory
 cd ../
 ```
-####  Visualizing kallisto kmer-based clustering results
+
+#### Visualizing kallisto kmer-based clustering results
+
 ```bash
+#1 Visualize Protein Coding results
+grep "" kmers_clustering/protein_coding_results/*/*summary* | python visualize_kmers_clustering.py protein_coding
+
+#2 Visualize Full Human Transcriptome results
+grep "" kmers_clustering/full_human_transcriptome_results/*/*summary* | python visualize_kmers_clustering.py full_transcriptome
 
 ```
-####  CD-HIT Clustering by similarity thresholds experiments
+
+#### CD-HIT Clustering by similarity thresholds experiments
+
 ```bash
 cd cd-hit/
 
@@ -100,15 +120,9 @@ do bash run.sh ../../data/loci_gencode.v28.transcripts.fa ${THRESHOLDS[${i}]}  $
 done;
 
 ```
-####  
-```bash
 
-```
-####  
-```bash
+#### Visualizing Cd-HIT clustering results
 
-```
-####  
 ```bash
 
 ```
