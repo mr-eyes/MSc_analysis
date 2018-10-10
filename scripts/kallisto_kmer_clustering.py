@@ -18,8 +18,8 @@ clusters = []
 node_transcripts = {}
 edges = []
 
-with open(gfa_file) as gtf:
-    for line in gtf:
+with open(gfa_file) as gfa:
+    for line in gfa:
         if line[0] == "S":
             main = re.findall(re.compile("S\t+(\d+).{1,}S:+(\w+\.\d+)"), line)
             extra = re.findall(re.compile(",+(\w+\.\d+)"), line)
