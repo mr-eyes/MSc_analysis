@@ -2,7 +2,7 @@ import sys
 from Bio import SeqIO
 
 if len(sys.argv) < 3:
-    exit("Please pass [1]: file_path [2] RNA_type")
+    exit("Please pass [1]: file_path [2] RNA_type\npython filter_multifasta.py <fasta_file> <rna_type(s)>")
 
 rna_types = []
 if len(sys.argv) == 3:
