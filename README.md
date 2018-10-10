@@ -12,12 +12,6 @@ cd master-analysis/
 sudo apt-get install autoconf
 ```
 
-#### Build CD-HIT 
-
-```bash
-bash build_cdhit.sh
-```
-
 #### Data preparation
 
 ```bash
@@ -123,7 +117,7 @@ done;
 cd ../
 ```
 
-#### Visualizing Cd-HIT clustering results
+#### Visualizing CD-HIT clustering results
 
 ```bash
 #1 Visualize Protein Coding clustering results
