@@ -2,7 +2,6 @@
 Plotting histogram of sequences lengths and their transcript types.
 """
 
-
 from Bio import SeqIO
 import plotly.plotly as py
 import plotly.offline
@@ -44,8 +43,9 @@ for seq in fasta_sequences:
 
 
 for key, value in counts.iteritems():
-    if length_threshold:
-        if key <= length_threshold and value >= count_threshold:
+    if length_threshold or count_threshold:
+
+        if key >= length_threshold and value >= count_threshold:
             filtered_counts[key] = value
     else:
         filtered_counts[key] = value
@@ -55,20 +55,15 @@ lengths = filtered_counts.keys()
 no_seqs = filtered_counts.values()
 
 data = [go.Bar(
-    #histfunc = "count",
     x=lengths,
     y=no_seqs,
 
 )]
 
 layout = go.Layout(
-    title='Seqs Lengths Vs. Occurence',
-    xaxis=dict(
-        title='Lengths (bp)'
-    ),
-    yaxis=dict(
-        title='No. Of Seqs'
-    )
+    title='<b>Seqs Lengths Vs. Occurence</b>',
+    xaxis=dict(title='<b>Lengths (bp)</b>',),
+    yaxis=dict(title='<b>No. Of Seqs</b>',)
 )
 
 print ("Generating histogram.html ...")
