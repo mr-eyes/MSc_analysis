@@ -126,3 +126,19 @@ grep "" cd-hit/protein_coding_assessement/*/*summary* | python ../scripts/visual
 #2 Visualize Full Human Transcriptome results
 grep "" cd-hit/full_transcriptome_assessement/*/*summary* | python .../scripts/visualize_cdhit_clustering.py cdhit_full_transcriptome.html
 ```
+
+#### KProcessor Indexing
+
+```bash
+#1 Clone single branch indexFusionGenes
+git clone https://github.com/dib-lab/Kprocessor --branch indexFusionGenes --single-branch kprocessor
+
+#2 Redirect to the downloaded branch directory
+cd kprocessor/
+
+#3 Build
+make
+
+# Run
+./Kprocessor index -i <fasta_path> -o <output_file> -k <kmer_size> --names <names_file>
+```
