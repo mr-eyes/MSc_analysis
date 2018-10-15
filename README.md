@@ -40,8 +40,14 @@ python ../scripts/add_locus.py -i protein_coding_gencode.v28.transcripts.fa -g g
 
 ```bash
 mkdir overview; cd overview/
-#1 Generating Histogram
-python ../../scripts/histogram.py ../gencode.v28.transcripts.fa
+#1 Generating Histograms
+
+## Histogram_1
+python ../../scripts/histogram.py ../gencode.v28.transcripts.fa 1200 0
+
+## Histogram_2
+python ../../scripts/histogram.py ../gencode.v28.transcripts.fa 99 0
+
 
 #2 Replicating gencode stats | RNA Types count
 python ../../scripts/extract_RNA_types.py ../gencode.v28.transcripts.fa > rna_types.txt
@@ -53,7 +59,7 @@ python ../../scripts/gtf_stats.py ../gencode.v28.annotation.gtf > gtf_stats.txt
 cd ../../
 ```
 
-####  Kallisto Kmer-based partitioning experiments
+#### Kallisto Kmer-based partitioning experiments
 
 ```bash
 cd experiments/kmers_clustering/
