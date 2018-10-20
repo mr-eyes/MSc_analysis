@@ -93,6 +93,14 @@ def _std(lst):
     std = math.sqrt(var)  # standard deviation
     return round(std, 2)
 
+def _median(lst):
+    n = len(lst)
+    if n < 1:
+            return None
+    if n % 2 == 1:
+            return sorted(lst)[n//2]
+    else:
+            return sum(sorted(lst)[n//2-1:n//2+1])/2.0
 
 fasta_file_path = ""
 clstr_file_path = ""
@@ -249,7 +257,11 @@ for cluster_type in ["_complete_mixed","_complete_clean","_incomplete_mixed","_i
         'max': {"no_genes": max(stats["genes"][cluster_type]),
                 "complete_genes": max(stats["complete-genes"][cluster_type]),
                 "no_loci": max(stats["loci"][cluster_type]),
-                "complete_loci": max(stats["complete-loci"][cluster_type])}
+                "complete_loci": max(stats["complete-loci"][cluster_type])},
+        'median': {"no_genes": _median(stats["genes"][cluster_type]),
+                   "complete_genes": _median(stats["complete-genes"][cluster_type]),
+                   "no_loci": _median(stats["loci"][cluster_type]),
+                   "complete_loci": _median(stats["complete-loci"][cluster_type])}
     }
     json_output[cluster_type] = result
 
