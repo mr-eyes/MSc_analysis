@@ -59,22 +59,37 @@ python ../../scripts/gtf_stats.py ../gencode.v28.annotation.gtf > gtf_stats.txt
 cd ../../
 ```
 
-#### Kallisto Kmer-based partitioning experiments
+#### kCluster Kmer-based clustering experiment
 
 ```bash
 cd experiments/kmers_clustering/
 
-#1 Download and build Kallisto with Kmer_size < 128 support
-bash install_kallisto.sh
+#1 Clone and build kCluster
+bash install_kCluster.sh
 
-#2 Run Kallisto kmer-based clustering on kmers 21:99 Protein_Coding human transcripts
-for i in {21..99..2}; 
-do bash run.sh ../../data/loci_protein_coding_gencode.v28.transcripts.fa ${i} protein_coding;
+
+#2 Run kCluster for protein coding transcripts
+
+## Prepare data for indexing
+
+python kCluster/scripts/kProcessor_prepare.py ../../data/loci_protein_coding_gencode.v28.transcripts.fa
+
+## Perform clustering, assessement and visualization
+
+for kmer in {21 25 31};
+do bash run.sh min_loci_protein_coding_gencode.v28.transcripts.fa ${kmer} protein_coding;
 done
 
-#3 Run Kallisto kmer-based clustering on kmers 21:99 Human Full Transcriptome
-for i in {21..99..2}; 
-do bash run.sh ../../data/loci_gencode.v28.transcripts.fa ${i} full_human_transcriptome;
+#3 Run kCluster for full Human Full Transcriptome
+
+## Prepare data for indexing
+
+python kCluster/scripts/kProcessor_prepare.py ../../data/loci_gencode.v28.transcripts.fa
+
+## Perform clustering, assessement and visualization
+
+for kmer in {21 25 31};
+do bash run.sh loci_gencode.v28.transcripts.fa ${kmer} protein_coding;
 done
 
 # Return to expirements root directory
@@ -131,20 +146,4 @@ grep "" cd-hit/protein_coding_assessement/*/*summary* | python ../scripts/visual
 
 #2 Visualize Full Human Transcriptome results
 grep "" cd-hit/full_transcriptome_assessement/*/*summary* | python .../scripts/visualize_cdhit_clustering.py cdhit_full_transcriptome.html
-```
-
-#### KProcessor Indexing
-
-```bash
-#1 Clone single branch indexFusionGenes
-git clone https://github.com/dib-lab/Kprocessor --branch indexFusionGenes --single-branch kprocessor
-
-#2 Redirect to the downloaded branch directory
-cd kprocessor/
-
-#3 Build
-make
-
-# Run
-./Kprocessor index -i <fasta_path> -o <output_file> -k <kmer_size> --names <names_file>
 ```
