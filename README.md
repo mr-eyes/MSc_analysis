@@ -96,17 +96,6 @@ done
 cd ../
 ```
 
-#### Visualizing kallisto kmer-based clustering results
-
-```bash
-#1 Visualize Protein Coding results
-grep "" kmers_clustering/protein_coding_results/*/*summary* | python ../scripts/visualize_kmers_clustering.py kallisto_protein_coding.html
-
-#2 Visualize Full Human Transcriptome results
-grep "" kmers_clustering/full_human_transcriptome_results/*/*summary* | python ../scripts/visualize_kmers_clustering.py kallisto_full_transcriptome.html
-
-```
-
 #### CD-HIT Clustering by similarity thresholds experiments
 
 ```bash
