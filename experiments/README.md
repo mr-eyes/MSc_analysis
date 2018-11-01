@@ -7,16 +7,12 @@ cd cd-hit/
 bash run.sh <fasta_path> <similarity> <word_size> <output_folder>
 ```
 
-## Kallisto
+## kCluster
+
+1- Run `kmers_clustering/install_kCluster.sh`
+
+2- Prepare data for indexing using `kCluster/scripts/kProcessor_prepare.py <fasta_file>`
 
 ```bash
-cd kmers_clustering/
-bash run.sh <fasta_path> <kmer_size> <output_folder>
-```
-
-## KProcessor
-
-```bash
-cd cd-hit/
-./Kprocessor index -i <fasta_path> -o <output_file> -k <kmer_size> --names <names_file>
+bash run.sh <prepared_fasta> <kmer_size> <output_dir>
 ```
