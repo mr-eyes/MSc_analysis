@@ -83,26 +83,6 @@ def build_stats(cluster_type, no_loci, no_genes, no_complete_genes, no_complete_
     stats["complete-loci"][cluster_type].append(no_complete_loci)
 
 
-def _mean(lst):
-    return round(sum(lst) / len(lst), 2)
-
-
-def _std(lst):
-    mean = sum(lst) / len(lst)   # mean
-    var = sum(pow(x-mean, 2) for x in lst) / len(lst)  # variance
-    std = math.sqrt(var)  # standard deviation
-    return round(std, 2)
-
-
-def _median(lst):
-    n = len(lst)
-    if n < 1:
-            return None
-    if n % 2 == 1:
-            return sorted(lst)[n//2]
-    else:
-            return sum(sorted(lst)[n//2-1:n//2+1])/2.0
-
 fasta_file_path = ""
 clstr_file_path = ""
 output_file = ""
@@ -230,37 +210,21 @@ summary.close()
 # Writing statistics json file ________________________________
 
 json_output = {}
+
 for cluster_type in ["_incomplete_mixed", "_incomplete_clean", "_complete_mixed", "_complete_clean"]:
+
     result = {
-        'mean': {
-            'no_genes': _mean(stats["genes"][cluster_type]),
-            'complete_genes':  _mean(stats["complete-genes"][cluster_type]),
-            'no_loci':  _mean(stats["loci"][cluster_type]),
-            'complete_loci':  _mean(stats["complete-loci"][cluster_type])
-        },
-        'std': {
-            'no_genes': _std(stats["genes"][cluster_type]),
-            'complete_genes':  _std(stats["complete-genes"][cluster_type]),
-            'no_loci':  _std(stats["loci"][cluster_type]),
-            'complete_loci':  _std(stats["complete-loci"][cluster_type])
-        },
-        'min': {"no_genes": min(stats["genes"][cluster_type]),
-                "complete_genes": min(stats["complete-genes"][cluster_type]),
-                "no_loci": min(stats["loci"][cluster_type]),
-                "complete_loci": min(stats["complete-loci"][cluster_type])},
-        'max': {"no_genes": max(stats["genes"][cluster_type]),
-                "complete_genes": max(stats["complete-genes"][cluster_type]),
-                "no_loci": max(stats["loci"][cluster_type]),
-                "complete_loci": max(stats["complete-loci"][cluster_type])},
-        'median': {"no_genes": _median(stats["genes"][cluster_type]),
-                "complete_genes": _median(stats["complete-genes"][cluster_type]),
-                "no_loci": _median(stats["loci"][cluster_type]),
-                "complete_loci": _median(stats["complete-loci"][cluster_type])}
-    }
+            'no_genes': stats["genes"][cluster_type],
+            'complete_genes':  stats["complete-genes"][cluster_type],
+            'no_loci':  stats["loci"][cluster_type],
+            'complete_loci':  stats["complete-loci"][cluster_type]
+        }
     json_output[cluster_type] = result
 
 
 json_file = open(output_file.split(".")[0] + "_stats.json", "w")
+
 json_file.write(json.dumps(json_output, sort_keys=True,
                            indent=4, separators=(',', ': ')))
+
 json_file.close()
