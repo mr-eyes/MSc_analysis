@@ -155,6 +155,11 @@ res = open(output_file, "w")
 res.write("cluster_id\tQ1\tQ2\tloci\tcomplete_loci\tgenes\tcomplete_genes\n")
 
 
+_cc_transcripts_count = 0
+_ic_transcripts_count = 0
+_cm_transcripts_count = 0
+_im_transcripts_count = 0
+
 for cluster_id, transcripts_ids in sorted(clusters_transcripts_ids.iteritems()):
     q1 = Q1(transcripts_ids)
     q2 = Q2(transcripts_ids)
@@ -169,23 +174,23 @@ for cluster_id, transcripts_ids in sorted(clusters_transcripts_ids.iteritems()):
     if q1 == True and q2 == True:
         ans1, ans2 = "Complete", "Mixed"
         _complete_mixed += 1
-        build_stats("_complete_mixed", no_loci, no_genes,
-                    no_complete_genes, no_complete_loci)
+        build_stats("_complete_mixed",no_loci, no_genes, no_complete_genes, no_complete_loci)
+        _cm_transcripts_count += len(transcripts_ids)
     if q1 == True and q2 == False:
         ans1, ans2 = "Complete", "Clean"
         _complete_clean += 1
-        build_stats("_complete_clean", no_loci, no_genes,
-                    no_complete_genes, no_complete_loci)
+        build_stats("_complete_clean",no_loci, no_genes, no_complete_genes, no_complete_loci)
+        _cc_transcripts_count += len(transcripts_ids)
     if q1 == False and q2 == True:
         ans1, ans2 = "InComplete", "Mixed"
         _incomplete_mixed += 1
-        build_stats("_incomplete_mixed", no_loci, no_genes,
-                    no_complete_genes, no_complete_loci)
+        build_stats("_incomplete_mixed",no_loci, no_genes, no_complete_genes, no_complete_loci)
+        _im_transcripts_count += len(transcripts_ids)
     if q1 == False and q2 == False:
         ans1, ans2 = "InComplete", "Clean"
         _incomplete_clean += 1
-        build_stats("_incomplete_clean", no_loci, no_genes,
-                    no_complete_genes, no_complete_loci)
+        build_stats("_incomplete_clean",no_loci, no_genes, no_complete_genes, no_complete_loci)
+        _ic_transcripts_count += len(transcripts_ids)
 
     line = str(cluster_id) + "\t" + ans1 + "\t" + ans2 + "\t" + str(no_loci) + "\t" + \
         str(no_complete_loci) + "\t" + str(no_genes) + \
@@ -195,16 +200,12 @@ for cluster_id, transcripts_ids in sorted(clusters_transcripts_ids.iteritems()):
 res.close()
 
 # Writing summary file of counts ________________________________
-
 summary = open(output_file.split(".")[0] + "_summary.txt", "w")
-summary.write(
-    ("%d Complete Mixed Components | [_complete_mixed]\n") % (_complete_mixed))
-summary.write(
-    ("%d Complete Clean Components | [_complete_clean]\n") % (_complete_clean))
-summary.write(("%d Incomplete Mixed  Components | [_incomplete_mixed]\n") % (
-    _incomplete_mixed))
-summary.write(("%d Incomplete Clean Components | [_incomplete_clean]\n") % (
-    _incomplete_clean))
+summary.write("seqs\tclstrs\ttype\n")
+summary.write(("%d\t%d\tcm\n") % (_cm_transcripts_count, _complete_mixed))
+summary.write(("%d\t%d\tcc\n") % (_cc_transcripts_count, _complete_clean))
+summary.write(("%d\t%d\tim\n") % (_im_transcripts_count, _incomplete_mixed))
+summary.write(("%d\t%d\tic\n") % (_ic_transcripts_count, _incomplete_clean))
 summary.close()
 
 # Writing statistics json file ________________________________
